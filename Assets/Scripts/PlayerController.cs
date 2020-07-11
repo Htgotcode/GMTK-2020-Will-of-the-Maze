@@ -15,19 +15,22 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     RaycastHit2D hit;
     RaycastHit2D[] hitFog = new RaycastHit2D[9];
-    [SerializeField] Tilemap tilemapFog;
-    [SerializeField] TileBase lightFog;
-    [SerializeField] TileBase blankFog;
-    SpriteRenderer sr;
-    [SerializeField] Sprite player_0;
-    [SerializeField] Sprite player_1;
-    [SerializeField] Sprite player_2;
-    [SerializeField] Sprite player_3;
+    [SerializeField] private Tilemap tilemapFog;
+    [SerializeField] private TileBase lightFog;
+    [SerializeField] private TileBase blankFog;
+    private SpriteRenderer sr;
+    [SerializeField] private Sprite player_0;
+    [SerializeField] private Sprite player_1;
+    [SerializeField] private Sprite player_2;
+    [SerializeField] private Sprite player_3;
     private GameObject tutCanvas;
     private GameObject tutText1;
     private GameObject tutText2;
     private GameObject tutTrigger;
     private int counterSB = 0;
+
+    [SerializeField] private AudioClip audioMove;
+    private AudioSource audioSource;
 
     void Start() {
         rb = GetComponent<Rigidbody2D>();
@@ -37,6 +40,7 @@ public class PlayerController : MonoBehaviour
         tutText2 = GameObject.Find("Tutorial Text_2");
         tutTrigger = GameObject.Find("Trigger Tutorial");
         tutCanvas.SetActive(false);
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -53,13 +57,13 @@ public class PlayerController : MonoBehaviour
                     } 
                 }
             }
-        
         }
         if (Input.GetKeyDown(KeyCode.W)) {
             sr.sprite = player_1;
             hit = Physics2D.Raycast(transform.position, Vector2.up, 0.5f, layerWalls);
             if (hit.collider == null) {
                 yMove += 1;
+                audioSource.PlayOneShot(audioMove);
             }
 
         }
@@ -68,6 +72,7 @@ public class PlayerController : MonoBehaviour
             hit = Physics2D.Raycast(transform.position, Vector2.left, 0.5f, layerWalls);
             if (hit.collider == null) {
                 xMove -= 1;
+                audioSource.PlayOneShot(audioMove);
             }
 
         }
@@ -77,6 +82,7 @@ public class PlayerController : MonoBehaviour
 
             if (hit.collider == null) {
                 yMove -= 1;
+                audioSource.PlayOneShot(audioMove);
             }
 
         }
@@ -85,6 +91,7 @@ public class PlayerController : MonoBehaviour
             hit = Physics2D.Raycast(transform.position, Vector2.right, 0.5f, layerWalls);
             if (hit.collider == null) {
                 xMove += 1;
+                audioSource.PlayOneShot(audioMove);
             }
 
         }
