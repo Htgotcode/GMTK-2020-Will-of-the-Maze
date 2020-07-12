@@ -5,14 +5,16 @@ public class GameManager : MonoBehaviour
 {
     public TileMapManager tileMapManager;
     public Transform playerPosition;
+    public CameraShake cameraShake;
+
+    private AudioSource audioSource;
 
     private List<MazeDoorEnum> availableMazeDoors;
-
     private float timeUntilNextMazeChange;
-    private float timeSinceLastMazeChange;
-    private readonly float baseTimeUntilMazeChange = 20;
-    private readonly float acceptableDistance = 12;
-    
+    private float timeElapsedSinceLastMazeChange;
+    private readonly float baseTimeUntilMazeChange = 20f;
+    private readonly float acceptableDistance = 12f;
+
     //Percentage of available doors changed
     private readonly float difficulty = 0.6f;
 
@@ -21,29 +23,48 @@ public class GameManager : MonoBehaviour
     {
         availableMazeDoors = new List<MazeDoorEnum>();
 
+        audioSource = gameObject.GetComponent<AudioSource>();
+
         timeUntilNextMazeChange = baseTimeUntilMazeChange + Random.Range(1, 20);
-        timeSinceLastMazeChange = 0;
+        timeElapsedSinceLastMazeChange = 0f;
     }
 
     // Update is called once per frame
     void Update()
     {
         //Change Maze at fixed intervals
-        if (Time.realtimeSinceStartup - timeSinceLastMazeChange > timeUntilNextMazeChange)
+        if (Time.realtimeSinceStartup - timeElapsedSinceLastMazeChange > timeUntilNextMazeChange)
         {
             //Maze Change Logic
-
             PopulateAvailableMazeDoors();
             UpdateMaze();
+
+            //Sound and Camera shake
+            PlayMazeShiftSound();
+            Invoke("ShakeMazeCamera", 0.5f); //0.5s delay
+            Invoke("PlayMazeShiftSound", 1f); //1s delay
+            Invoke("PlayMazeShiftSound", 2f); //2s delay
 
             //Clear the available maze doors
             availableMazeDoors.Clear();
 
             //Store current time
-            timeSinceLastMazeChange = Time.realtimeSinceStartup;
+            timeElapsedSinceLastMazeChange = Time.realtimeSinceStartup;
             //Get next time until maze change
             timeUntilNextMazeChange = baseTimeUntilMazeChange + Random.Range(1, 20);
         }
+    }
+
+    private void ShakeMazeCamera()
+    {
+        //CameraShake
+        StartCoroutine(cameraShake.Shake(0.5f, 0.2f));
+    }
+
+    private void PlayMazeShiftSound()
+    {
+        //Play sound
+        audioSource.PlayOneShot(audioSource.clip);
     }
 
     /// <summary>
