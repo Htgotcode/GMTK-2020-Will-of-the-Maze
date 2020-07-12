@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -7,55 +7,70 @@ public class TileMapManager : MonoBehaviour
 {
     public Tilemap walls;
     public Tilemap floors;
-    public TileBase wall_top;
-    public TileBase wall_top_left;
-    public TileBase wall_top_right;
-    public TileBase wall_bottom;
-    public TileBase wall_bottom_left;
-    public TileBase wall_bottom_right;
-    public TileBase wall_right;
-    public TileBase wall_left;
-    public TileBase wall_blank;
+    public Tilemap tilemapFog;
+    [SerializeField] private TileBase darkFog;
+    [SerializeField] private TileBase wall_top;
+    [SerializeField] private TileBase wall_top_left_corner;
+    [SerializeField] private TileBase wall_top_right_corner;
+    [SerializeField] private TileBase wall_top_left_piece;
+    [SerializeField] private TileBase wall_top_right_piece;
+    [SerializeField] private TileBase wall_bottom;
+    [SerializeField] private TileBase wall_bottom_left_corner;
+    [SerializeField] private TileBase wall_bottom_right_corner;
+    [SerializeField] private TileBase wall_bottom_left_piece;
+    [SerializeField] private TileBase wall_bottom_right_piece;
+    [SerializeField] private TileBase wall_right;
+    [SerializeField] private TileBase wall_left;
+    [SerializeField] private TileBase wall_blank;
 
-    public Dictionary<DoorEnum, MazeDoor> MazeDoors { get; private set; }
+    public Dictionary<MazeDoorEnum, MazeDoor> MazeDoors { get; private set; }
 
     // Start is called before the first frame update
     void Start()
     {
-        MazeDoors = new Dictionary<DoorEnum, MazeDoor>
+        #region Create Maze Doors Here
+        MazeDoors = new Dictionary<MazeDoorEnum, MazeDoor>
         {
-            {DoorEnum.Door1, BuildMazeDoor(-1,-4,
-                                            3, 3,
-                                            wall_top, wall_top_left, wall_top_right,
-                                            wall_bottom, wall_bottom_left, wall_bottom_right,
+            {MazeDoorEnum.Door1, BuildMazeDoor(-1, 3,
+                                            3, 2,
+                                            wall_top, wall_bottom_left_piece, wall_bottom_right_piece,
+                                            wall_bottom, wall_top_left_piece, wall_top_right_piece,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door2, BuildMazeDoor(6, 0,
+                                            3, 2,
+                                            wall_top, wall_bottom_left_piece, wall_bottom_right_piece,
+                                            wall_bottom, wall_top_left_piece, wall_top_right_piece,
                                             wall_left, wall_right)}
         };
+        #endregion
     }
 
-    
+    //Test code
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            UpdateDoor(DoorEnum.Door1, DoorStateEnum.Close);
-            Debug.Log(MazeDoors[DoorEnum.Door1].Open);
+            UpdateDoor(MazeDoorEnum.Door1, MazeDoorState.Close);
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            UpdateDoor(DoorEnum.Door1, DoorStateEnum.Open);
-            Debug.Log(MazeDoors[DoorEnum.Door1].Open);
+            UpdateDoor(MazeDoorEnum.Door1, MazeDoorState.Open);
         }
     }
 
     #region MazeDoor building
     /// <summary>
-    /// BuildMazeDoor builds a MazeDoor that contains a list of doorTiles which is a "door" in the maze
+    /// BuildMazeDoor builds a MazeDoor that contains a list of doorTiles which acts a "door" in the maze.
+    /// Requires the programmer to input the correct textures in the correct areas.
+    /// Works for 2x2 2x3 3x2 ...
+    /// If you want to block 2 spaces in a corridor use a 3x2 and include the walls adjacent to the two spaces.
     /// </summary>
     /// <param name="doorPositionX">Bottom left most x position out of all the tiles in the doorTile list</param>
     /// <param name="doorPositionY">Bottom left most y position out of all the tiles in the doorTile list</param>
     /// <param name="xLength">How far to the right of this x position is part of the door</param>
     /// <param name="yLength">How far above this y position is part of the door</param>
-    /// <returns></returns>
+    /// <returns>Maze Door</returns>
     private MazeDoor BuildMazeDoor(int doorPositionX, int doorPositionY, int xLength, int yLength,
                                      TileBase closedTop, TileBase closedTopLeft, TileBase closedTopRight,
                                      TileBase closedBottom, TileBase closedBottomLeft, TileBase closedBottomRight,
@@ -96,22 +111,22 @@ public class TileMapManager : MonoBehaviour
                     closedTile = closedTopRight;
                 }
                 //Left
-                else if (y > doorPositionY && x == (doorPositionX + xLength - 1) && yLength > 2)
+                else if (y > doorPositionY && x == (doorPositionX + xLength - 1))
                 {
                     closedTile = closedLeft;
                 }
                 //Right
-                else if (y > doorPositionY && x == doorPositionX && yLength > 2)
+                else if (y > doorPositionY && x == doorPositionX)
                 {
                     closedTile = closedRight;
                 }
                 //Bottom
-                else if (x > doorPositionX && y == (doorPositionY + yLength - 1) && xLength > 2)
+                else if (x > doorPositionX && y == (doorPositionY + yLength - 1))
                 {
                     closedTile = closedBottom;
                 }
                 //Top
-                else if (x > doorPositionX && y == doorPositionY && xLength > 2)
+                else if (x > doorPositionX && y == doorPositionY)
                 {
                     closedTile = closedTop;
                 }
@@ -128,7 +143,7 @@ public class TileMapManager : MonoBehaviour
                 }
             }
         }
-        return new MazeDoor(newDoorTileList);
+        return new MazeDoor(new Vector3Int(doorPositionX, doorPositionY, 0), newDoorTileList);
     }
 
     /// <summary>
@@ -137,7 +152,7 @@ public class TileMapManager : MonoBehaviour
     /// <param name="tilePosition">Position of the doorTile</param>
     /// <param name="OpenDoorTileTilemap">Tilemap the </param>
     /// <param name="doorClosedTile">Tile the doorTile must used when it is closed, the open tile is assumed to be what the doorTile already is</param>
-    /// <returns></returns>
+    /// <returns>Door Tile</returns>
     private DoorTile BuildDoorTile(Vector3Int tilePosition, TilemapEnum OpenDoorTileTilemap, TileBase doorClosedTile)
     {
         switch (OpenDoorTileTilemap)
@@ -156,12 +171,32 @@ public class TileMapManager : MonoBehaviour
     /// <summary>
     /// UpdateDoor will update a door given a door's Enum aka ID and the required door state OPEN/CLOSED
     /// </summary>
-    /// <param name="door">Door ENUM/ID</param>
-    /// <param name="doorState">Door State OPEN/CLOSED</param>
-    public void UpdateDoor(DoorEnum door, DoorStateEnum doorState)
+    /// <param name="door">Door ENUM ID</param>
+    /// <param name="doorState">Door State OPEN CLOSED AUTO</param>
+    public void UpdateDoor(MazeDoorEnum door, MazeDoorState doorState)
     {
-        //Flip the Open status of the door
-        MazeDoors[door].Open = !MazeDoors[door].Open;
+        switch (doorState)
+        {
+            case MazeDoorState.Auto:
+                if (MazeDoors[door].Open)
+                {
+                    doorState = MazeDoorState.Close;
+                }
+                else
+                {
+                    doorState = MazeDoorState.Open;
+                }
+                MazeDoors[door].Open = !MazeDoors[door].Open;
+                break;
+            case MazeDoorState.Open:
+                MazeDoors[door].Open = true;
+                break;
+            case MazeDoorState.Close:
+                MazeDoors[door].Open = false;
+                break;
+            default:
+                throw new NotImplementedException();
+        }
 
         //Extract the DoorTiles
         List<DoorTile> doorTiles = MazeDoors[door].DoorTiles;
@@ -172,15 +207,15 @@ public class TileMapManager : MonoBehaviour
             switch (doorState)
             {
                 //If the door is opening, update the doorTile to its opened state
-                case DoorStateEnum.Open:
+                case MazeDoorState.Open:
                     UpdateDoorTileSetter(doorTile.DoorTilePostion, doorTile.OpenTileTilemap, doorTile.OpenTile);
                     break;
                 //If the door is closing, update the doorTile to its closed state
-                case DoorStateEnum.Close:
+                case MazeDoorState.Close:
                     UpdateDoorTileSetter(doorTile.DoorTilePostion, doorTile.ClosedTileTilemap, doorTile.ClosedTile);
                     break;
                 default:
-                    throw new System.NotImplementedException();
+                    throw new NotImplementedException();
             }
         }
     }
@@ -215,8 +250,36 @@ public class TileMapManager : MonoBehaviour
                 walls.SetTile(tilePostion, tile);
                 break;
             default:
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
         }
+        tilemapFog.SetTile(tilePostion, darkFog);
+    }
+
+    /// <summary>
+    /// Open all maze doors
+    /// </summary>
+    public void OpenAllMazeDoors()
+    {
+        foreach (MazeDoorEnum mazeDoor in MazeDoors.Keys)
+        {
+            UpdateDoor(mazeDoor, MazeDoorState.Open);
+        }
+    }
+
+    /// <summary>
+    /// Close all maze doors
+    /// </summary>
+    public void CloseAllMazeDoors()
+    {
+        foreach (MazeDoorEnum mazeDoor in MazeDoors.Keys)
+        {
+            UpdateDoor(mazeDoor, MazeDoorState.Close);
+        }
+    }
+
+    public Vector3Int MazeDoorPosition(MazeDoorEnum door)
+    {
+        return MazeDoors[door].DoorPosition;
     }
     #endregion
 }
@@ -227,12 +290,14 @@ public class TileMapManager : MonoBehaviour
 public class MazeDoor
 {
     public bool Open { get; set; }
+    public Vector3Int DoorPosition { get; }
     public List<DoorTile> DoorTiles { get; }
 
-    public MazeDoor(List<DoorTile> doorTiles)
+    public MazeDoor(Vector3Int doorPosition, List<DoorTile> doorTiles)
     {
-        DoorTiles = doorTiles;
         Open = true;
+        DoorPosition = doorPosition;
+        DoorTiles = doorTiles;
     }
 }
 
@@ -257,7 +322,7 @@ public class DoorTile
     }
 }
 
-public enum DoorEnum
+public enum MazeDoorEnum
 {
     Door1,
     Door2,
@@ -266,10 +331,11 @@ public enum DoorEnum
     Door5
 }
 
-public enum DoorStateEnum
+public enum MazeDoorState
 {
     Open,
-    Close
+    Close,
+    Auto
 }
 
 public enum TilemapEnum
