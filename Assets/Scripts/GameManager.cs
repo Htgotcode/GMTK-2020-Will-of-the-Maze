@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using DialogueEditor;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,7 +15,9 @@ public class GameManager : MonoBehaviour
     private float timeElapsedSinceLastMazeChange;
     private readonly float baseTimeUntilMazeChange = 20f;
     private readonly float acceptableDistance = 12f;
+    private int count = 0;
 
+    [SerializeField] private NPCConversation Conversation;
     //Percentage of available doors changed
     private readonly float difficulty = 0.6f;
 
@@ -51,6 +54,10 @@ public class GameManager : MonoBehaviour
             timeElapsedSinceLastMazeChange = Time.realtimeSinceStartup;
             //Get next time until maze change
             timeUntilNextMazeChange = baseTimeUntilMazeChange + Random.Range(1, 20);
+            count += 1;
+            if (count == 1) {
+                ConversationManager.Instance.StartConversation(Conversation);
+            }
         }
     }
 

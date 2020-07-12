@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Tutorial
   - Torch
+  - Dialogue
+  - Compass
   layers:
   - Default
   - TransparentFX
