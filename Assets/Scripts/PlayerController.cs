@@ -63,10 +63,11 @@ public class PlayerController : MonoBehaviour
                     if (tileInfo.Equals("FogOfWar_Dark")) {
                         tilemapFog.SetTile(tpos, lightFog);
                     }
-                    stepCount += 1;
-                    txtCount.text = stepCount.ToString();
+                    
+                    
                 }
-            } 
+            }
+            txtCount.text = stepCount.ToString();
         }
         if (Input.GetKeyDown(KeyCode.W)) {
             sr.sprite = player_1;
@@ -74,6 +75,7 @@ public class PlayerController : MonoBehaviour
             if (hit.collider == null) {
                 yMove += 1f;
                 audioSource.PlayOneShot(audioMove);
+                stepCount += 1;
             }
 
         }
@@ -83,6 +85,7 @@ public class PlayerController : MonoBehaviour
             if (hit.collider == null) {
                 xMove -= 1f;
                 audioSource.PlayOneShot(audioMove);
+                stepCount += 1;
             }
 
         }
@@ -93,6 +96,7 @@ public class PlayerController : MonoBehaviour
             if (hit.collider == null) {
                 yMove -= 1f;
                 audioSource.PlayOneShot(audioMove);
+                stepCount += 1;
             }
 
         }
@@ -102,6 +106,7 @@ public class PlayerController : MonoBehaviour
             if (hit.collider == null) {
                 xMove += 1f;
                 audioSource.PlayOneShot(audioMove);
+                stepCount += 1;
             }
 
         }
@@ -119,8 +124,10 @@ public class PlayerController : MonoBehaviour
         counter += 1;
         if(counter == 1) {
             ConversationManager.Instance.StartConversation(Conversation_1);
+            GameObject.Find("Dialogue Trigger").SetActive(false);
         } else if (counter == 2) {
             ConversationManager.Instance.StartConversation(Conversation_2);
+            GameObject.Find("Dialogue Trigger (1)").SetActive(false);
         }
     }
 }
