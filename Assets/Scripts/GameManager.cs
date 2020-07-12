@@ -42,8 +42,7 @@ public class GameManager : MonoBehaviour
             //Sound and Camera shake
             PlayMazeShiftSound();
             Invoke("ShakeMazeCamera", 0.5f); //0.5s delay
-            Invoke("PlayMazeShiftSound", 1f); //1s delay
-            Invoke("PlayMazeShiftSound", 2f); //2s delay
+            Invoke("PlayMazeShiftSound", 0.5f); //0.5s delay
 
             //Clear the available maze doors
             availableMazeDoors.Clear();
@@ -90,7 +89,6 @@ public class GameManager : MonoBehaviour
         {
             tileMapManager.UpdateDoor(mazeDoor, MazeDoorState.Auto);
         }
-        Debug.Log(selectedMazeDoors.Count);
     }
 
     /// <summary>
