@@ -8,6 +8,9 @@ TagManager:
   - Torch
   - Dialogue
   - Compass
+  - End
+  - Block
+  - Open
   layers:
   - Default
   - TransparentFX

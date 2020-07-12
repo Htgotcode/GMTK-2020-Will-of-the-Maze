@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour
             //Get next time until maze change
             timeUntilNextMazeChange = baseTimeUntilMazeChange + Random.Range(1, 20);
             count += 1;
-            if (count == 1) {
+            if (count == 2) {
                 ConversationManager.Instance.StartConversation(Conversation);
             }
         }

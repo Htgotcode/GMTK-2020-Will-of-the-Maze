@@ -2,11 +2,14 @@
 using System;
 using System.Diagnostics.PerformanceData;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+
+    [SerializeField]private TileMapManager tmm;
 
     private float xMove = 10.5f;
     private float yMove = 10.5f;
@@ -30,14 +33,16 @@ public class PlayerController : MonoBehaviour
     private GameObject controls;
     private BoxCollider2D bc2D;
     private float counter;
-    private float stepCount = 0;
+    public static float stepCount = 0;
     [SerializeField] private AudioClip audioMove;
     private AudioSource audioSource;
 
     private GameManager gm;
 
     [SerializeField] private NPCConversation Conversation_1;
-    [SerializeField] private NPCConversation Conversation_2;
+    [SerializeField] private NPCConversation Conversation_2;    
+    [SerializeField] private NPCConversation Conversation_3;
+    [SerializeField] private NPCConversation Conversation_4;
 
     [SerializeField] private GameObject nav;
     [SerializeField] private GameObject navTarget;
@@ -67,6 +72,9 @@ public class PlayerController : MonoBehaviour
                 stepCount += 1;
                 UpdateFog();
             }
+        }
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            Application.Quit();
         }
         if (Input.GetKeyDown(KeyCode.A)) {
             sr.sprite = player_2;
@@ -116,46 +124,14 @@ public class PlayerController : MonoBehaviour
     }
 
     private void UpdateFog() {
-
-        //line 1
         RaycastHit2D hitFog1;
-        hitFog1 = Physics2D.Raycast(bc2D.transform.localPosition, new Vector2(1,0), 1f, layerFog);
+        hitFog1 = Physics2D.Raycast(bc2D.transform.localPosition, Vector2.zero, 0.5f, layerFog);
             if (hitFog1.collider != null) {
                 var tpos = tilemapFog.WorldToCell(hitFog1.point);
                 var tileInfo = tilemapFog.GetTile(tpos).name;
                 if (tileInfo.Equals("FogOfWar_Dark")) {
                     tilemapFog.SetTile(tpos, lightFog);
                 }
-        }
-        //line 2
-        RaycastHit2D hitFog2;
-        hitFog2 = Physics2D.Raycast(bc2D.transform.localPosition, new Vector2(0, 1), 1f, layerFog);
-        if (hitFog2.collider != null) {
-            var tpos = tilemapFog.WorldToCell(hitFog2.point);
-            var tileInfo = tilemapFog.GetTile(tpos).name;
-            if (tileInfo.Equals("FogOfWar_Dark")) {
-                tilemapFog.SetTile(tpos, lightFog);
-            }
-        }
-        //line 3
-        RaycastHit2D hitFog3;
-        hitFog3 = Physics2D.Raycast(bc2D.transform.localPosition, new Vector2(-1, 0), 1f, layerFog);
-        if (hitFog3.collider != null) {
-            var tpos = tilemapFog.WorldToCell(hitFog3.point);
-            var tileInfo = tilemapFog.GetTile(tpos).name;
-            if (tileInfo.Equals("FogOfWar_Dark")) {
-                tilemapFog.SetTile(tpos, lightFog);
-            }
-        }
-        //line 4
-        RaycastHit2D hitFog4;
-        hitFog4 = Physics2D.Raycast(bc2D.transform.localPosition, new Vector2(0, -1), 1f, layerFog);
-        if (hitFog4.collider != null) {
-            var tpos = tilemapFog.WorldToCell(hitFog4.point);
-            var tileInfo = tilemapFog.GetTile(tpos).name;
-            if (tileInfo.Equals("FogOfWar_Dark")) {
-                tilemapFog.SetTile(tpos, lightFog);
-            }
         }
     }
 
@@ -168,12 +144,32 @@ public class PlayerController : MonoBehaviour
             } else if (counter == 2) {
                 ConversationManager.Instance.StartConversation(Conversation_2);
                 GameObject.Find("Dialogue Trigger (1)").SetActive(false);
+            } else if (counter == 3) {
+                ConversationManager.Instance.StartConversation(Conversation_3);
+                GameObject.Find("Dialogue Trigger (2)").SetActive(false);
             }
         }
         if (collision.tag.Equals("Compass")) {
             nav.GetComponent<SpriteRenderer>().enabled = true;
             GameObject.Find("compass").SetActive(false);
         }
+        if (collision.tag.Equals("End")) {
+            ConversationManager.Instance.StartConversation(Conversation_4);
+            GameObject.Find("Dialogue Trigger End").SetActive(false);
+        }
+        if (collision.tag.Equals("Block")) {
+            tmm.UpdateDoor(MazeDoorEnum.Door1, MazeDoorState.Close);
+            tmm.UpdateDoor(MazeDoorEnum.Door2, MazeDoorState.Close);
+        }
+        if (collision.tag.Equals("Open")) {
+
+            tmm.UpdateDoor(MazeDoorEnum.Door0, MazeDoorState.Close);
+            tmm.UpdateDoor(MazeDoorEnum.Door1, MazeDoorState.Open);
+            tmm.UpdateDoor(MazeDoorEnum.Door2, MazeDoorState.Open);
+        }
+    }
+    public void endGame() {
+        SceneManager.LoadScene(2);
     }
 }
 
