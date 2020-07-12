@@ -1,7 +1,8 @@
 ﻿using DialogueEditor;
+using System.Diagnostics.PerformanceData;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,16 +22,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Sprite player_1;
     [SerializeField] private Sprite player_2;
     [SerializeField] private Sprite player_3;
+    [SerializeField] private Text txtCount;
     private GameObject tutCanvas;
     private GameObject minimap;
     private bool mapOpen;
     private GameObject controls;
     private BoxCollider2D bc2D;
-
+    private float counter;
+    private float stepCount = 0;
     [SerializeField] private AudioClip audioMove;
     private AudioSource audioSource;
 
-    public NPCConversation Conversation;
+    [SerializeField] private NPCConversation Conversation_1;
+    [SerializeField] private NPCConversation Conversation_2;
 
     void Start() {
         rb = GetComponent<Rigidbody2D>();
@@ -59,9 +63,10 @@ public class PlayerController : MonoBehaviour
                     if (tileInfo.Equals("FogOfWar_Dark")) {
                         tilemapFog.SetTile(tpos, lightFog);
                     }
+                    stepCount += 1;
+                    txtCount.text = stepCount.ToString();
                 }
-            }
-            
+            } 
         }
         if (Input.GetKeyDown(KeyCode.W)) {
             sr.sprite = player_1;
@@ -111,7 +116,12 @@ public class PlayerController : MonoBehaviour
         rb.MovePosition(new Vector2(xMove, yMove));
     }
     private void OnTriggerEnter2D(Collider2D collision) {
-        ConversationManager.Instance.StartConversation(Conversation);
+        counter += 1;
+        if(counter == 1) {
+            ConversationManager.Instance.StartConversation(Conversation_1);
+        } else if (counter == 2) {
+            ConversationManager.Instance.StartConversation(Conversation_2);
+        }
     }
 }
 
