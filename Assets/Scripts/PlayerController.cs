@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using DialogueEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
+
 
 public class PlayerController : MonoBehaviour
 {
 
-    private float xMove = -1.5f;
-    private float yMove = -0.5f;
+    private float xMove = 10.5f;
+    private float yMove = 10.5f;
     LayerMask layerWalls = 1 << 8;
     LayerMask layerFog = 1 << 9;
     private Rigidbody2D rb;
     RaycastHit2D hit;
-    RaycastHit2D[] hitFog = new RaycastHit2D[9];
+    RaycastHit2D[] hitFog;
     [SerializeField] private Tilemap tilemapFog;
     [SerializeField] private TileBase lightFog;
     [SerializeField] private TileBase blankFog;
@@ -24,29 +22,35 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Sprite player_2;
     [SerializeField] private Sprite player_3;
     private GameObject tutCanvas;
-    private GameObject tutText1;
-    private GameObject tutText2;
-    private GameObject tutTrigger;
-    private int counterSB = 0;
+    private GameObject minimap;
+    private bool mapOpen;
+    private GameObject controls;
+    private BoxCollider2D bc2D;
 
     [SerializeField] private AudioClip audioMove;
     private AudioSource audioSource;
+
+    public NPCConversation Conversation;
 
     void Start() {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         tutCanvas = GameObject.FindGameObjectWithTag("Tutorial");
-        tutText1 = GameObject.Find("Tutorial Text_1");
-        tutText2 = GameObject.Find("Tutorial Text_2");
-        tutTrigger = GameObject.Find("Trigger Tutorial");
-        tutCanvas.SetActive(false);
         audioSource = GetComponent<AudioSource>();
+        minimap = GameObject.Find("Map");
+        minimap.SetActive(false);
+        controls = GameObject.Find("Controls");
+        controls.SetActive(true);
+        bc2D = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
     void Update() {
-        if (Input.anyKey) { 
-            hitFog = Physics2D.CircleCastAll(transform.position, 1f, transform.position, layerFog);
+       
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D)) {
+            minimap.SetActive(false);
+            controls.SetActive(false);
+            hitFog = Physics2D.CircleCastAll(transform.position, 0.5f, Vector2.zero, layerFog);
 
             for (int i = 0; i < hitFog.Length; i++) {
                 if (hitFog[i].collider != null) {
@@ -54,64 +58,60 @@ public class PlayerController : MonoBehaviour
                     var tileInfo = tilemapFog.GetTile(tpos).name;
                     if (tileInfo.Equals("FogOfWar_Dark")) {
                         tilemapFog.SetTile(tpos, lightFog);
-                    } 
+                    }
                 }
             }
+            
         }
         if (Input.GetKeyDown(KeyCode.W)) {
             sr.sprite = player_1;
-            hit = Physics2D.Raycast(transform.position, Vector2.up, 0.5f, layerWalls);
+            hit = Physics2D.Raycast(bc2D.transform.position, Vector2.up, 1f, layerWalls);
             if (hit.collider == null) {
-                yMove += 1;
+                yMove += 1f;
                 audioSource.PlayOneShot(audioMove);
             }
 
         }
         if (Input.GetKeyDown(KeyCode.A)) {
             sr.sprite = player_2;
-            hit = Physics2D.Raycast(transform.position, Vector2.left, 0.5f, layerWalls);
+            hit = Physics2D.Raycast(bc2D.transform.position, Vector2.left, 1f, layerWalls);
             if (hit.collider == null) {
-                xMove -= 1;
+                xMove -= 1f;
                 audioSource.PlayOneShot(audioMove);
             }
 
         }
         if (Input.GetKeyDown(KeyCode.S)) {
             sr.sprite = player_0;
-            hit = Physics2D.Raycast(transform.position, Vector2.down, 0.5f, layerWalls);
+            hit = Physics2D.Raycast(bc2D.transform.position, Vector2.down, 1f, layerWalls);
 
             if (hit.collider == null) {
-                yMove -= 1;
+                yMove -= 1f;
                 audioSource.PlayOneShot(audioMove);
             }
 
         }
         if (Input.GetKeyDown(KeyCode.D)) {
             sr.sprite = player_3;
-            hit = Physics2D.Raycast(transform.position, Vector2.right, 0.5f, layerWalls);
+            hit = Physics2D.Raycast(bc2D.transform.position, Vector2.right, 1f, layerWalls);
             if (hit.collider == null) {
-                xMove += 1;
+                xMove += 1f;
                 audioSource.PlayOneShot(audioMove);
             }
 
         }
+        if (Input.GetKeyDown(KeyCode.M) && mapOpen == false) {
+            minimap.SetActive(true);
+            mapOpen = true;
+        } else if (Input.GetKeyDown(KeyCode.M) && mapOpen == true) {
+            minimap.SetActive(false);
+            mapOpen = false;
+        }
 
         rb.MovePosition(new Vector2(xMove, yMove));
-
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            tutText1.SetActive(false);
-            tutText2.SetActive(true);
-            counterSB += 1;
-            if (counterSB == 2) {
-                tutCanvas.SetActive(false);
-            }
-        }
     }
-
     private void OnTriggerEnter2D(Collider2D collision) {
-        tutCanvas.SetActive(true);
-        tutText2.SetActive(false);
-        tutTrigger.SetActive(false);
+        ConversationManager.Instance.StartConversation(Conversation);
     }
 }
 
