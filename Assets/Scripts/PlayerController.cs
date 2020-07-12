@@ -1,6 +1,4 @@
 ﻿using DialogueEditor;
-using System;
-using System.Diagnostics.PerformanceData;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
