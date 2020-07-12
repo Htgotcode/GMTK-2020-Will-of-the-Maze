@@ -31,32 +31,229 @@ public class TileMapManager : MonoBehaviour
         #region Create Maze Doors Here
         MazeDoors = new Dictionary<MazeDoorEnum, MazeDoor>
         {
-            {MazeDoorEnum.Door1, BuildMazeDoor(-1, 3,
+            {MazeDoorEnum.Door0, BuildMazeDoor(25, 9,
+                                            2, 3,
+                                            wall_top, wall_right, wall_top_left_piece,
+                                            wall_bottom, wall_right, wall_bottom_left_piece,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door1, BuildMazeDoor(21, 13,
                                             3, 2,
                                             wall_top, wall_bottom_left_piece, wall_bottom_right_piece,
+                                            wall_bottom, wall_top, wall_top,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door2, BuildMazeDoor(21, 6,
+                                            3, 2,
+                                            wall_top, wall_bottom, wall_bottom,
                                             wall_bottom, wall_top_left_piece, wall_top_right_piece,
                                             wall_left, wall_right)},
 
-            {MazeDoorEnum.Door2, BuildMazeDoor(6, 0,
+            {MazeDoorEnum.Door3, BuildMazeDoor(3, 11,
                                             3, 2,
                                             wall_top, wall_bottom_left_piece, wall_bottom_right_piece,
+                                            wall_bottom, wall_top, wall_top_right_piece,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door4, BuildMazeDoor(1, 4,
+                                            3, 2,
+                                            wall_top, wall_bottom, wall_bottom,
                                             wall_bottom, wall_top_left_piece, wall_top_right_piece,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door5, BuildMazeDoor(34, 6,
+                                            2, 3,
+                                            wall_top, wall_right, wall_top_left_piece,
+                                            wall_bottom, wall_right, wall_bottom_left_piece,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door6, BuildMazeDoor(55, 0,
+                                            2, 3,
+                                            wall_top, wall_top_right_piece, wall_left,
+                                            wall_bottom, wall_bottom_right_piece, wall_bottom_left_piece,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door7, BuildMazeDoor(55, 6,
+                                            2, 3,
+                                            wall_top, wall_top_right_piece, wall_left,
+                                            wall_bottom, wall_bottom_right_piece, wall_left,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door8, BuildMazeDoor(55, 12,
+                                            2, 3,
+                                            wall_top, wall_top_right_piece, wall_top_left_piece,
+                                            wall_bottom, wall_bottom_right_piece, wall_left,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door9, BuildMazeDoor(67, 0,
+                                            2, 3,
+                                            wall_top, wall_right, wall_top_left_piece,
+                                            wall_bottom, wall_bottom_right_piece, wall_bottom_left_piece,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door10, BuildMazeDoor(67, 6,
+                                            2, 3,
+                                            wall_top, wall_right, wall_top_left_piece,
+                                            wall_bottom, wall_right, wall_bottom_left_piece,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door11, BuildMazeDoor(67, 12,
+                                            2, 3,
+                                            wall_top, wall_top_right_piece, wall_top_left_piece,
+                                            wall_bottom, wall_right, wall_bottom_left_piece,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door12, BuildMazeDoor(37, 21,
+                                            3, 3,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_blank)},
+
+            {MazeDoorEnum.Door13, BuildMazeDoor(81, 29,
+                                            3, 3,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door14, BuildMazeDoor(3, 31,
+                                            3, 3,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door15, BuildMazeDoor(58, 34,
+                                            3, 3,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door16, BuildMazeDoor(35, 38,
+                                            3, 3,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door17, BuildMazeDoor(22, 42,
+                                            2, 3,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door18, BuildMazeDoor(71, 46,
+                                            3, 3,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door19, BuildMazeDoor(80, 45,
+                                            3, 3,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door20, BuildMazeDoor(65, 54,
+                                            3, 2,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door21, BuildMazeDoor(78, 54,
+                                            3, 4,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door22, BuildMazeDoor(37, 56,
+                                            2, 3,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door23, BuildMazeDoor(57, 56,
+                                            2, 3,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door24, BuildMazeDoor(70, 65,
+                                            3, 3,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door25, BuildMazeDoor(80, 79,
+                                            4, 2,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door26, BuildMazeDoor(59, 79,
+                                            3, 2,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door27, BuildMazeDoor(75, 82,
+                                            3, 2,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door28, BuildMazeDoor(46, 75,
+                                            3, 2,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door29, BuildMazeDoor(37, 82,
+                                            3, 2,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door30, BuildMazeDoor(32, 66,
+                                            2, 3,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door31, BuildMazeDoor(15, 59,
+                                            3, 2,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door32, BuildMazeDoor(15, 72,
+                                            3, 2,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door33, BuildMazeDoor(6, 76,
+                                            3, 2,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door34, BuildMazeDoor(15, 85,
+                                            3, 2,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door35, BuildMazeDoor(10, 94,
+                                            3, 2,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
+                                            wall_left, wall_right)},
+
+            {MazeDoorEnum.Door36, BuildMazeDoor(5, 59,
+                                            3, 2,
+                                            wall_top, wall_top_left_corner, wall_top_right_corner,
+                                            wall_bottom, wall_bottom_left_corner, wall_bottom_right_corner,
                                             wall_left, wall_right)}
         };
         #endregion
-    }
-
-    //Test code
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            UpdateDoor(MazeDoorEnum.Door1, MazeDoorState.Close);
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            UpdateDoor(MazeDoorEnum.Door1, MazeDoorState.Open);
-        }
     }
 
     #region MazeDoor building
@@ -324,11 +521,44 @@ public class DoorTile
 
 public enum MazeDoorEnum
 {
+    Door0,
     Door1,
     Door2,
     Door3,
     Door4,
-    Door5
+    Door5,
+    Door6,
+    Door7,
+    Door8,
+    Door9,
+    Door10,
+    Door11,
+    Door12,
+    Door13,
+    Door14,
+    Door15,
+    Door16,
+    Door17,
+    Door18,
+    Door19,
+    Door20,
+    Door21,
+    Door22,
+    Door23,
+    Door24,
+    Door25,
+    Door26,
+    Door27,
+    Door28,
+    Door29,
+    Door30,
+    Door31,
+    Door32,
+    Door33,
+    Door34,
+    Door35,
+    Door36,
+    Door37
 }
 
 public enum MazeDoorState
